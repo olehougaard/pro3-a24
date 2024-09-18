@@ -1,6 +1,6 @@
 package dk.via.cars;
 
-import dk.via.cars.client.Client;
+import dk.via.cars.client.dry.Client;
 import dk.via.cars.model.Car;
 import dk.via.cars.model.Money;
 import org.junit.Before;

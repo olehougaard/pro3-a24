@@ -31,7 +31,7 @@ public class CarBase {
 
 	public List<Car> getAllCars() throws PersistanceException {
 		Collection<Car> allCars = dao.readAll();
-		LinkedList<Car> list = new LinkedList<Car>();
+		LinkedList<Car> list = new LinkedList<>();
 		for(Car car: allCars) {
 			if (!carsCache.containsKey(car.getLicenseNumber())) {
 				carsCache.put(car.getLicenseNumber(), car);

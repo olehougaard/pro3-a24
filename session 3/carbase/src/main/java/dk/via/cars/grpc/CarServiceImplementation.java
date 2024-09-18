@@ -64,6 +64,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         try {
             List<Car> allCars = carBase.getAllCars();
             responseObserver.onNext(ModelToGrpc.cars(allCars));
+            responseObserver.onCompleted();
         } catch (PersistanceException e) {
             e.printStackTrace();
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Couldn't read data").build();
