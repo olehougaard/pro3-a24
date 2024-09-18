@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ModelToGrpc {
     public static dk.via.carbase.Money money(dk.via.cars.model.Money money) {
+        if (money == null) return null;
         dk.via.carbase.Money.Builder moneyBuilder = dk.via.carbase.Money.newBuilder()
                 .setAmount(money.amount().toString())
                 .setCurrency(money.currency());
@@ -11,6 +12,7 @@ public class ModelToGrpc {
     }
 
     public static dk.via.carbase.CarData car(dk.via.cars.model.Car car) {
+        if (car == null) return null;
         dk.via.carbase.CarData.Builder carBuilder = dk.via.carbase.CarData.newBuilder()
                 .setLicenseNumber(car.getLicenseNumber())
                 .setModel(car.getModel())

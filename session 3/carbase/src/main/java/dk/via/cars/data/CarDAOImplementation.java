@@ -20,7 +20,10 @@ public class CarDAOImplementation implements CarDAO {
             helper.executeUpdate("INSERT INTO car VALUES (?, ?, ?, ?, ?)", licenseNo, model, year, price.amount(), price.currency());
         	return new Car(licenseNo, model, year, price);
         } catch (SQLException e) {
-            throw new PersistanceException(e);
+            if (e.getMessage().contains("duplicate key"))
+                throw new DuplicateKeyException(e);
+            else
+                throw new PersistanceException(e);
         }
 	}
 	
@@ -36,7 +39,9 @@ public class CarDAOImplementation implements CarDAO {
 
 	public Car read(String licenseNumber) throws PersistanceException {
         try {
-            return helper.mapSingle(this::createCar, "SELECT * FROM car where license_number = ?", licenseNumber);
+            Car car = helper.mapSingle(this::createCar, "SELECT * FROM car where license_number = ?", licenseNumber);
+            if (car == null) throw new NotFoundException();
+            return car;
         } catch (SQLException e) {
             throw new PersistanceException(e);
         }
