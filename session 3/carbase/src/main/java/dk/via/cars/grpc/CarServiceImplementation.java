@@ -6,7 +6,7 @@ import dk.via.carbase.*;
 import dk.via.cars.business.CarBase;
 import dk.via.cars.data.DuplicateKeyException;
 import dk.via.cars.data.NotFoundException;
-import dk.via.cars.data.PersistanceException;
+import dk.via.cars.data.PersistenceException;
 import dk.via.cars.model.Car;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
@@ -31,12 +31,10 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             responseObserver.onNext(ModelToGrpc.car(car));
             responseObserver.onCompleted();
         } catch (DuplicateKeyException e) {
-            e.printStackTrace();
             Status error = Status.newBuilder().setCode(Code.ALREADY_EXISTS_VALUE).setMessage("Duplicate license plate").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
-        } catch (PersistanceException e) {
-            e.printStackTrace();
-            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Couldn't save data").build();
+        } catch (PersistenceException e) {
+            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
@@ -46,15 +44,13 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         String licenseNumber = request.getLicenseNumber();
         try {
             Car car = carBase.getCar(licenseNumber);
-            Status error = Status.newBuilder().setCode(Code.NOT_FOUND_VALUE).setMessage("Car not found").build();
             responseObserver.onNext(ModelToGrpc.car(car));
             responseObserver.onCompleted();
         } catch (NotFoundException e) {
             Status error = Status.newBuilder().setCode(Code.NOT_FOUND_VALUE).setMessage("Car not found").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
-        } catch (PersistanceException e) {
-            e.printStackTrace();
-            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Couldn't read data").build();
+        } catch (PersistenceException e) {
+            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not read data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
@@ -65,9 +61,24 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             List<Car> allCars = carBase.getAllCars();
             responseObserver.onNext(ModelToGrpc.cars(allCars));
             responseObserver.onCompleted();
-        } catch (PersistanceException e) {
-            e.printStackTrace();
-            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Couldn't read data").build();
+        } catch (NotFoundException e) {
+            Status error = Status.newBuilder().setCode(Code.NOT_FOUND_VALUE).setMessage("Car not found").build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        } catch (PersistenceException e) {
+            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not read data").build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        }
+    }
+
+    @Override
+    public void updateCar(CarData request, StreamObserver<EmptyMessage> responseObserver) {
+        Car car = GrpcToModel.car(request);
+        try {
+            carBase.updateCar(car);
+            responseObserver.onNext(EmptyMessage.newBuilder().build());
+            responseObserver.onCompleted();
+        } catch (PersistenceException e) {
+            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
@@ -78,9 +89,9 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         try {
             carBase.removeCar(car);
             responseObserver.onNext(EmptyMessage.newBuilder().build());
-        } catch (PersistanceException e) {
-            e.printStackTrace();
-            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Couldn't write data").build();
+            responseObserver.onCompleted();
+        } catch (PersistenceException e) {
+            Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }

@@ -65,6 +65,17 @@ public class Client {
         }
     }
 
+    public void updateCar(Car car) {
+        ManagedChannel channel = channel();
+        try {
+            CarServiceGrpc.CarServiceBlockingStub stub = CarServiceGrpc.newBlockingStub(channel);
+            //noinspection ResultOfMethodCallIgnored
+            stub.updateCar(ModelToGrpc.car(car));
+        } finally {
+            channel.shutdown();
+        }
+    }
+
     public void removeCar(Car car) {
         ManagedChannel channel = channel();
         try {

@@ -15,7 +15,7 @@ public class CarDAOImplementation implements CarDAO {
 		this.helper = helper;
 	}
 
-	public Car create(String licenseNo, String model, int year, Money price) throws PersistanceException {
+	public Car create(String licenseNo, String model, int year, Money price) throws PersistenceException {
         try {
             helper.executeUpdate("INSERT INTO car VALUES (?, ?, ?, ?, ?)", licenseNo, model, year, price.amount(), price.currency());
         	return new Car(licenseNo, model, year, price);
@@ -23,7 +23,7 @@ public class CarDAOImplementation implements CarDAO {
             if (e.getMessage().contains("duplicate key"))
                 throw new DuplicateKeyException(e);
             else
-                throw new PersistanceException(e);
+                throw new PersistenceException(e);
         }
 	}
 	
@@ -37,38 +37,40 @@ public class CarDAOImplementation implements CarDAO {
 		return new Car(licenseNo, model, year, price);
 	}
 
-	public Car read(String licenseNumber) throws PersistanceException {
+	public Car read(String licenseNumber) throws PersistenceException {
         try {
             Car car = helper.mapSingle(this::createCar, "SELECT * FROM car where license_number = ?", licenseNumber);
             if (car == null) throw new NotFoundException();
             return car;
         } catch (SQLException e) {
-            throw new PersistanceException(e);
+            throw new PersistenceException(e);
         }
     }
 
-	public Collection<Car> readAll() throws PersistanceException {
+	public Collection<Car> readAll() throws PersistenceException {
         try {
             return helper.map(this::createCar, "SELECT * FROM car");
         } catch (SQLException e) {
-            throw new PersistanceException(e);
+            throw new PersistenceException(e);
         }
     }
 
-	public void update(Car car) throws PersistanceException {
+	public void update(Car car) throws PersistenceException {
         try {
-            helper.executeUpdate("UPDATE car SET model=?, year=?, price_amount=?, price_currency=? WHERE license_number = ?",
-                    car.getModel(), car.getYear(), car.getPrice().amount(), car.getPrice().currency(), car.getLicenseNumber());
+            int updated = helper.executeUpdate(
+            "UPDATE car SET model=?, year=?, price_amount=?, price_currency=? WHERE license_number = ?",
+                car.getModel(), car.getYear(), car.getPrice().amount(), car.getPrice().currency(), car.getLicenseNumber());
+            if (updated == 0) throw new NotFoundException();
         } catch (SQLException e) {
-            throw new PersistanceException(e);
+            throw new PersistenceException(e);
         }
     }
 
-	public void delete(Car car) throws PersistanceException {
+	public void delete(Car car) throws PersistenceException {
         try {
             helper.executeUpdate("DELETE FROM car WHERE license_number = ?", car.getLicenseNumber());
         } catch (SQLException e) {
-            throw new PersistanceException(e);
+            throw new PersistenceException(e);
         }
     }
 }

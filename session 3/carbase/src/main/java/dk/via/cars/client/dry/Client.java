@@ -41,7 +41,13 @@ public class Client {
         });
     }
 
+    public void updateCar(Car car) {
+        //noinspection ResultOfMethodCallIgnored
+        adapter.execute(stub -> stub.updateCar(ModelToGrpc.car(car)));
+    }
+
     public void removeCar(Car car) {
+        //noinspection ResultOfMethodCallIgnored
         adapter.execute(stub -> stub.removeCar(ModelToGrpc.car(car)));
     }
 }

@@ -31,5 +31,6 @@ service CarService {
   rpc registerCar(CarData) returns (CarData);
   rpc getCar(CarId) returns (CarData);
   rpc getAllCars(EmptyMessage) returns (CarsData);
+  rpc updateCar(CarData) returns (EmptyMessage);
   rpc removeCar(CarData) returns (EmptyMessage);
 }

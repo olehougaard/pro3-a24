@@ -24,8 +24,9 @@ public class CarBaseTest {
 		Money eur = new Money(new BigDecimal("4999.99"), "EUR");
 		Car car = carBase.getCar("AV 41 213");
 		car.setPrice(eur);
+		carBase.updateCar(car);
 		List<Car> allCars = carBase.getAllCars();
 		assertEquals(1, allCars.size());
-		//assertEquals(eur, allCars.get(0).getPrice());
+		assertEquals(eur, allCars.get(0).getPrice());
 	}
 }
