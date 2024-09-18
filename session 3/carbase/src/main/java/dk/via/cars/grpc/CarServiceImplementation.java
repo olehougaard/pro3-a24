@@ -4,9 +4,10 @@ import com.google.rpc.Code;
 import com.google.rpc.Status;
 import dk.via.carbase.*;
 import dk.via.cars.business.CarBase;
-import dk.via.cars.data.DuplicateKeyException;
-import dk.via.cars.data.NotFoundException;
-import dk.via.cars.data.PersistenceException;
+import dk.via.cars.business.ValidationException;
+import dk.via.cars.business.persistence.DuplicateKeyException;
+import dk.via.cars.business.persistence.NotFoundException;
+import dk.via.cars.business.persistence.PersistenceException;
 import dk.via.cars.model.Car;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
@@ -36,6 +37,9 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        } catch (ValidationException e) {
+            Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
 
@@ -51,6 +55,9 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not read data").build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        } catch (ValidationException e) {
+            Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
@@ -80,6 +87,9 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        } catch (ValidationException e) {
+            Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }
 
@@ -92,6 +102,9 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             responseObserver.onCompleted();
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
+            responseObserver.onError(StatusProto.toStatusRuntimeException(error));
+        } catch (ValidationException e) {
+            Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
     }

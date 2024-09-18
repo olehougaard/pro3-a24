@@ -1,4 +1,4 @@
-package dk.via.cars.data;
+package dk.via.cars.business.persistence;
 
 import java.sql.SQLException;
 
