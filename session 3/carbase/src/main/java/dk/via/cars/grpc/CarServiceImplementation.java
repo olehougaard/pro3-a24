@@ -23,11 +23,11 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
 
     @Override
     public void registerCar(CarData request, StreamObserver<CarData> responseObserver) {
-        String licenseNumber = request.getLicenseNumber();
-        String model = request.getModel();
-        int year = request.getYear();
-        Money price = request.getPrice();
         try {
+            String licenseNumber = request.getLicenseNumber();
+            String model = request.getModel();
+            int year = request.getYear();
+            Money price = request.getPrice();
             Car car = carBase.registerCar(licenseNumber, model, year, GrpcToModel.money(price));
             responseObserver.onNext(ModelToGrpc.car(car));
             responseObserver.onCompleted();
@@ -37,7 +37,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
-        } catch (ValidationException e) {
+        } catch (ValidationException | NumberFormatException e) {
             Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
@@ -45,8 +45,8 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
 
     @Override
     public void getCar(CarId request, StreamObserver<CarData> responseObserver) {
-        String licenseNumber = request.getLicenseNumber();
         try {
+            String licenseNumber = request.getLicenseNumber();
             Car car = carBase.getCar(licenseNumber);
             responseObserver.onNext(ModelToGrpc.car(car));
             responseObserver.onCompleted();
@@ -79,15 +79,15 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
 
     @Override
     public void updateCar(CarData request, StreamObserver<EmptyMessage> responseObserver) {
-        Car car = GrpcToModel.car(request);
         try {
+            Car car = GrpcToModel.car(request);
             carBase.updateCar(car);
             responseObserver.onNext(EmptyMessage.newBuilder().build());
             responseObserver.onCompleted();
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
-        } catch (ValidationException e) {
+        } catch (ValidationException | NumberFormatException e) {
             Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
@@ -95,15 +95,15 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
 
     @Override
     public void removeCar(CarData request, StreamObserver<EmptyMessage> responseObserver) {
-        Car car = GrpcToModel.car(request);
         try {
+            Car car = GrpcToModel.car(request);
             carBase.removeCar(car);
             responseObserver.onNext(EmptyMessage.newBuilder().build());
             responseObserver.onCompleted();
         } catch (PersistenceException e) {
             Status error = Status.newBuilder().setCode(Code.INTERNAL_VALUE).setMessage("Could not save data").build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
-        } catch (ValidationException e) {
+        } catch (ValidationException | NumberFormatException e) {
             Status error = Status.newBuilder().setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.getMessage()).build();
             responseObserver.onError(StatusProto.toStatusRuntimeException(error));
         }
