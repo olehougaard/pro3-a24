@@ -29,7 +29,8 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             int year = request.getYear();
             Money price = request.getPrice();
             Car car = carBase.registerCar(licenseNumber, model, year, GrpcToModel.money(price));
-            responseObserver.onNext(ModelToGrpc.car(car));
+            CarData response = ModelToGrpc.car(car);
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (DuplicateKeyException e) {
             Status error = Status.newBuilder().setCode(Code.ALREADY_EXISTS_VALUE).setMessage("Duplicate license plate").build();
