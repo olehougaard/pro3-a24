@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class Server {
 	public static void main(String[] args) throws SQLException, IOException, InterruptedException {
-		DatabaseHelper<Car> db = new DatabaseHelper<Car>("jdbc:postgresql://localhost:5433/postgres?currentSchema=car_base", "postgres", "password");
+		DatabaseHelper<Car> db = new DatabaseHelper<Car>("jdbc:postgresql://localhost:543/postgres?currentSchema=car_base", "postgres", "password");
 		Persistence dao = new CarDAO(db);
 		CarBase base = new CarBase(dao);
 		CarServiceImplementation grpc = new CarServiceImplementation(base);
