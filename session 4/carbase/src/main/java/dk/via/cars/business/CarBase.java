@@ -4,6 +4,7 @@ import dk.via.cars.business.persistence.Persistence;
 import dk.via.cars.business.persistence.PersistenceException;
 import dk.via.cars.model.Money;
 import dk.via.cars.model.Car;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,6 @@ public class CarBase {
 		carsCache.put(licenseNumber, car);
 		return car;
 	}
-	
 
 	public Car getCar(String licenseNumber) throws PersistenceException, ValidationException {
 		if (licenseNumber == null || licenseNumber.isEmpty()) throw new ValidationException("licenseNumber is required");
