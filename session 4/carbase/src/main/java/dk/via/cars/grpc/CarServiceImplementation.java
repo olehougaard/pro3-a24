@@ -3,7 +3,7 @@ package dk.via.cars.grpc;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import dk.via.carbase.*;
-import dk.via.cars.business.CarBase;
+import dk.via.cars.business.CarSalesSystem;
 import dk.via.cars.business.ValidationException;
 import dk.via.cars.business.persistence.DuplicateKeyException;
 import dk.via.cars.business.persistence.NotFoundException;
@@ -19,11 +19,11 @@ import java.util.List;
 
 @GrpcService
 public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase {
-    private final CarBase carBase;
+    private final CarSalesSystem sales;
     private static Logger logger = LoggerFactory.getLogger("Service");
 
-    public CarServiceImplementation(CarBase carBase) {
-        this.carBase = carBase;
+    public CarServiceImplementation(CarSalesSystem sales) {
+        this.sales = sales;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
             String model = request.getModel();
             int year = request.getYear();
             Money price = request.getPrice();
-            Car car = carBase.registerCar(licenseNumber, model, year, GrpcToModel.money(price));
+            Car car = sales.registerCar(licenseNumber, model, year, GrpcToModel.money(price));
             CarData response = ModelToGrpc.car(car);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -56,7 +56,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
     public void getCar(CarId request, StreamObserver<CarData> responseObserver) {
         try {
             String licenseNumber = request.getLicenseNumber();
-            Car car = carBase.getCar(licenseNumber);
+            Car car = sales.getCar(licenseNumber);
             responseObserver.onNext(ModelToGrpc.car(car));
             responseObserver.onCompleted();
         } catch (NotFoundException e) {
@@ -74,7 +74,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
     @Override
     public void getAllCars(EmptyMessage request, StreamObserver<CarsData> responseObserver) {
         try {
-            List<Car> allCars = carBase.getAllCars();
+            List<Car> allCars = sales.getAllCars();
             responseObserver.onNext(ModelToGrpc.cars(allCars));
             responseObserver.onCompleted();
         } catch (NotFoundException e) {
@@ -91,7 +91,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
     public void updateCar(CarData request, StreamObserver<EmptyMessage> responseObserver) {
         try {
             Car car = GrpcToModel.car(request);
-            carBase.updateCar(car);
+            sales.updateCar(car);
             responseObserver.onNext(EmptyMessage.newBuilder().build());
             responseObserver.onCompleted();
         } catch (PersistenceException e) {
@@ -107,7 +107,7 @@ public class CarServiceImplementation extends CarServiceGrpc.CarServiceImplBase 
     public void removeCar(CarData request, StreamObserver<EmptyMessage> responseObserver) {
         try {
             Car car = GrpcToModel.car(request);
-            carBase.removeCar(car);
+            sales.removeCar(car);
             responseObserver.onNext(EmptyMessage.newBuilder().build());
             responseObserver.onCompleted();
         } catch (PersistenceException e) {

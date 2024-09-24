@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Component
-public class CarBase {
+public class CarBase implements CarSalesSystem {
 	private final Map<String, Car> carsCache = new HashMap<>();
 	private final Persistence persistence;
 
@@ -21,6 +21,7 @@ public class CarBase {
 		this.persistence = persistence;
 	}
 	
+	@Override
 	public Car registerCar(String licenseNumber, String model, int year, Money price) throws PersistenceException, ValidationException {
 		if (licenseNumber == null || licenseNumber.isEmpty()) throw new ValidationException("licenseNumber is required");
 		if (model == null || model.isEmpty()) throw new ValidationException("model is required");
@@ -32,6 +33,7 @@ public class CarBase {
 		return car;
 	}
 
+	@Override
 	public Car getCar(String licenseNumber) throws PersistenceException, ValidationException {
 		if (licenseNumber == null || licenseNumber.isEmpty()) throw new ValidationException("licenseNumber is required");
 
@@ -41,6 +43,7 @@ public class CarBase {
 		return carsCache.get(licenseNumber);
 	}
 
+	@Override
 	public List<Car> getAllCars() throws PersistenceException {
 		Collection<Car> allCars = persistence.readAll();
 		LinkedList<Car> list = new LinkedList<>();
@@ -53,6 +56,7 @@ public class CarBase {
 		return list;
 	}
 
+	@Override
 	public void updateCar(Car car) throws PersistenceException, ValidationException {
 		if (car == null) throw new ValidationException("car is required");
 
@@ -60,6 +64,7 @@ public class CarBase {
 		persistence.update(car);
 	}
 
+	@Override
 	public void removeCar(Car car) throws PersistenceException, ValidationException {
 		if (car == null) throw new ValidationException("car is required");
 
