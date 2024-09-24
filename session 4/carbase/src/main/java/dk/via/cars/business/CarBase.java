@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Component
 public class CarBase implements CarSalesSystem {
@@ -18,10 +19,13 @@ public class CarBase implements CarSalesSystem {
 	public CarBase(Persistence persistence) {
 		this.persistence = persistence;
 	}
-	
+
+	private static final Pattern licensePattern = Pattern.compile("^[A-Z]{2} \\d{2} \\d{3}$");
+
 	@Override
 	public Car registerCar(String licenseNumber, String model, int year, Money price) throws PersistenceException, ValidationException {
 		if (price.amount().compareTo(BigDecimal.ZERO) < 0) throw new ValidationException("price must be greater than zero");
+		if (!licensePattern.matcher(licenseNumber).matches()) throw new ValidationException("license number is invalid");
 
 		Car car = persistence.create(licenseNumber, model, year, price);
 		carsCache.put(licenseNumber, car);
