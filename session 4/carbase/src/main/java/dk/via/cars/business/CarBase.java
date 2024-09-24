@@ -4,10 +4,8 @@ import dk.via.cars.business.persistence.Persistence;
 import dk.via.cars.business.persistence.PersistenceException;
 import dk.via.cars.model.Money;
 import dk.via.cars.model.Car;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import dk.via.cars.model.ValidationException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,9 +21,6 @@ public class CarBase implements CarSalesSystem {
 	
 	@Override
 	public Car registerCar(String licenseNumber, String model, int year, Money price) throws PersistenceException, ValidationException {
-		if (licenseNumber == null || licenseNumber.isEmpty()) throw new ValidationException("licenseNumber is required");
-		if (model == null || model.isEmpty()) throw new ValidationException("model is required");
-		if (price == null) throw new ValidationException("price is required");
 		if (price.amount().compareTo(BigDecimal.ZERO) < 0) throw new ValidationException("price must be greater than zero");
 
 		Car car = persistence.create(licenseNumber, model, year, price);

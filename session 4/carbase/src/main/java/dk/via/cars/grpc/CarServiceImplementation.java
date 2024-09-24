@@ -4,7 +4,7 @@ import com.google.rpc.Code;
 import com.google.rpc.Status;
 import dk.via.carbase.*;
 import dk.via.cars.business.CarSalesSystem;
-import dk.via.cars.business.ValidationException;
+import dk.via.cars.model.ValidationException;
 import dk.via.cars.business.persistence.DuplicateKeyException;
 import dk.via.cars.business.persistence.NotFoundException;
 import dk.via.cars.business.persistence.PersistenceException;

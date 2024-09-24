@@ -3,6 +3,7 @@ package dk.via.cars.business;
 import dk.via.cars.business.persistence.PersistenceException;
 import dk.via.cars.model.Car;
 import dk.via.cars.model.Money;
+import dk.via.cars.model.ValidationException;
 
 import java.util.List;
 
