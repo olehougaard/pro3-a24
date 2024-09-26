@@ -7,3 +7,4 @@ Jeg anbefaler at I Kloner hele repositoriet, så bliver det nemmere at få opdat
 Sessionerne:
 
 3. gRPC - introducerer også Maven
+4. Komponenter i Spring Boot
