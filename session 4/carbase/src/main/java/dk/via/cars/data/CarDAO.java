@@ -7,6 +7,7 @@ import dk.via.cars.business.persistence.PersistenceException;
 import dk.via.cars.model.Car;
 import dk.via.cars.model.Money;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 @Component
+@Scope("singleton")
 public class CarDAO implements Persistence {
 	private final DatabaseHelper<Car> helper;
 
