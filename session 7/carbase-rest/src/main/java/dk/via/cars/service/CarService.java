@@ -28,7 +28,7 @@ public class CarService {
 
     @ExceptionHandler
     public ResponseEntity<String> handleNoSuchElementFoundException (NotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
     @ExceptionHandler
