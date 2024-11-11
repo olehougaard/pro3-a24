@@ -13,16 +13,17 @@ public class Subscriber implements Closeable {
 
     private final Connection connection;
     private final Channel channel;
+    private final String queueName;
 
     public Subscriber(String host) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
         connection = factory.newConnection();
         channel = connection.createChannel();
+        queueName = channel.queueDeclare().getQueue();
     }
 
     public void subscribe(String topic, MessageConsumer consumer) throws IOException {
-        String queueName = channel.queueDeclare().getQueue();
         channel.exchangeDeclare(topic, "fanout");
         channel.queueBind(queueName, topic, "");
         channel.basicConsume(queueName, true, (consumerTag, delivery) -> {
@@ -34,6 +35,7 @@ public class Subscriber implements Closeable {
 
     @Override
     public void close() throws IOException {
+        channel.queueDelete(queueName);
         connection.close();
     }
 }
