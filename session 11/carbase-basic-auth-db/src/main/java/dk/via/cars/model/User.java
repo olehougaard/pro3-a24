@@ -28,21 +28,6 @@ public final class User {
 
     public UserDetails toUserDetails() {
         List<SimpleGrantedAuthority> grantedAuthorities = authorities.stream().map(SimpleGrantedAuthority::new).toList();
-        return new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return grantedAuthorities;
-            }
-
-            @Override
-            public String getPassword() {
-                return password;
-            }
-
-            @Override
-            public String getUsername() {
-                return username;
-            }
-        };
+        return new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities);
     }
 }
