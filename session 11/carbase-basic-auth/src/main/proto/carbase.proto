@@ -1,0 +1,36 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package dk.via.carbase;
+
+message Money {
+  string amount = 1;
+  string currency = 2;
+}
+
+message EmptyMessage {
+
+}
+
+message CarId {
+  string licenseNumber = 1;
+}
+
+message CarData {
+  string licenseNumber = 1;
+  string model = 2;
+  int32 year = 3;
+  Money price = 4;
+}
+
+message CarsData {
+  repeated CarData cars = 1;
+}
+
+service CarService {
+  rpc registerCar(CarData) returns (CarData);
+  rpc getCar(CarId) returns (CarData);
+  rpc getAllCars(EmptyMessage) returns (CarsData);
+  rpc updateCar(CarData) returns (EmptyMessage);
+  rpc removeCar(CarData) returns (EmptyMessage);
+}
