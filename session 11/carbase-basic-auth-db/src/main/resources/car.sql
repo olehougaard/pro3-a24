@@ -1,3 +1,5 @@
+SET SCHEMA 'car_base';
+
 CREATE TABLE Car (
   license_number VARCHAR(20) PRIMARY KEY,
   model VARCHAR(50) NOT NULL,
@@ -7,7 +9,7 @@ CREATE TABLE Car (
 
 CREATE TABLE "User" (
   username VARCHAR(50) PRIMARY KEY,
-  password VARCHAR(50) NOT NULL
+  password TEXT NOT NULL
 );
 
 CREATE TABLE Roles (
@@ -19,9 +21,3 @@ CREATE TABLE User_Roles (
   role VARCHAR(20) REFERENCES Roles(role),
   primary key (username, role)
 );
-
-INSERT INTO "User" VALUES ('admin', 'password'), ('user', 'abcd1234');
-
-INSERT INTO Roles VALUES ('admin'), ('registered_user');
-
-INSERT INTO User_Roles VALUES ('admin', 'admin'), ('admin', 'registered_user'), ('user', 'registered_user');
